@@ -6,6 +6,8 @@ const apiRoutes = require('./routes');
 
 const { ServerConfig } = require('./config');
 
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/api',apiRoutes);
 
 
