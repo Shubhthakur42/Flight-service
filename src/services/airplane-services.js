@@ -25,6 +25,28 @@ async function createAirplane(data){
   }
 }
 
+async function updateAirplane(id,data){
+    try {
+      const airplane = await airplaneRepository.update(id,data);
+      return airplane;
+    }
+    catch(error) {
+      if(error.name == 'SequelizeValidationError') {
+        let explanation=[];
+        error.errors.forEach((err)=>{
+          explanation.push(err.message);
+        });
+        throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+      }
+      if (error.statusCode == StatusCodes.NOT_FOUND) {
+      throw new AppError(
+        'The airplane you are trying to update is not present',
+        StatusCodes.NOT_FOUND
+      );
+    }
+    }
+}
+
 async function getAirplanes(){
   try{
     const airplanes = await airplaneRepository.getall();
@@ -63,5 +85,6 @@ module.exports ={
   createAirplane,
   getAirplanes,
   getAirplane,
-  destroyAirplane
+  destroyAirplane,
+  updateAirplane
 }

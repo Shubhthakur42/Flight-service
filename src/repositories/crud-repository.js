@@ -38,13 +38,22 @@ class CrudRepository{
       const res=await this.model.findAll();
       return res;
   }
-  async update(id,data){
-      const res=await this.model.update(data,{
-        where:{
-          id:id
-        }
-      });
-      return res;
+  async update(id, data) {
+  try {
+    const record = await this.model.findByPk(id);
+
+    if (!record) {
+      throw new AppError(
+        'Record not found',
+        StatusCodes.NOT_FOUND
+      );
+    }
+
+    const updatedRecord = await record.update(data);
+    return updatedRecord;
+  } catch (error) {
+    throw error;
   }
+}
 }
 module.exports= CrudRepository;
